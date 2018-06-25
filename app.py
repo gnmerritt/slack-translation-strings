@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 VERIFICATION_TOKEN = os.environ.get('V_TOKEN')
 APP_TOKEN = os.environ.get('A_TOKEN')
+CHANNEL = os.environ.get('A_IN_CHANNEL')
 
 
 class SlackMessage(object):
@@ -31,7 +32,9 @@ def pick_char():
 
     event = data.get('event', {})
     type = event.get('type', None)
-    if type == 'message':
+    channel = event.get('channel')
+
+    if type == 'message' and channel == CHANNEL:
         text = event.get('text', '')
         user = event.get('user', None)
 
@@ -46,6 +49,7 @@ def pick_char():
 def mangle_post(msg):
     msg.text = make_translation(msg.text)
     data = jsonpickle.encode(msg, unpicklable=False)
+    print(f"sending {data}")
     res = requests.post('https://slack.com/api/chat.postMessage', json=data)
     print(f"got res={res}, json={res.json()}")
 
