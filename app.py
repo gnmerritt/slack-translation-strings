@@ -1,4 +1,5 @@
 import os
+import jsonpickle
 from threading import Thread
 import requests
 from flask import Flask, jsonify, request
@@ -10,10 +11,10 @@ APP_TOKEN = os.environ.get('A_TOKEN')
 
 
 class SlackMessage(object):
-    def __init__(self, ts: str, channel: str, text: str):
+    def __init__(self, user: str, text: str):
         self.token = APP_TOKEN
-        self.ts = ts
-        self.channel = channel
+        self.channel = "#translations"
+        self.user = user
         self.text = text
 
 
@@ -31,11 +32,11 @@ def pick_char():
     event = data.get('event', {})
     type = event.get('type', None)
     if type == 'message':
-        channel = event.get('channel', None)
         text = event.get('text', '')
-        ts = event.get('ts', None)
-        if channel is not None and text and ts is not None:
-            msg = SlackMessage(ts, channel, text)
+        user = event.get('user', None)
+
+        if text and user is not None:
+            msg = SlackMessage(user, text)
             t = Thread(target=mangle_post, args=(msg,))
             t.start()
 
@@ -43,9 +44,14 @@ def pick_char():
 
 
 def mangle_post(msg):
-    msg.text = "replaced the text!"
+    msg.text = make_translation(msg.text)
     data = jsonpickle.encode(msg, unpicklable=False)
-    requests.post('https://slack.com/api/chat.update', json=data)
+    res = requests.post('https://slack.com/api/chat.postMessage', json=data)
+    print(f"got res={res}, json={res.json()}")
+
+
+def make_translation(text):
+    return "replaced the text!"
 
 
 if __name__ == "__main__":
