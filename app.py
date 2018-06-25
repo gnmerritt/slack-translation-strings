@@ -47,7 +47,7 @@ def mangle_post(user, text):
 
 def make_translation(user, text):
     words = text.split(" ")
-    some = [w for w in words if random.uniform() > 0.25]
+    some = [w for w in words if random.uniform(0, 1) > 0.25]
     return f"{user}: {'_'.join(some)}"
 
 
