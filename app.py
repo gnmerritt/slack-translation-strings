@@ -37,7 +37,7 @@ def pick_char():
 
 
 def mangle_post(user, text):
-    data = {text: make_translation(user, text), channel: "#translations"}
+    data = {'text': make_translation(user, text), 'channel': "#translations"}
     print(f"sending {data}")
     headers = {'Authorization': f"Bearer {APP_TOKEN}"}
     res = requests.post('https://slack.com/api/chat.postMessage', json=data, headers=headers)
