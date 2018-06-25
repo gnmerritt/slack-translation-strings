@@ -36,8 +36,7 @@ def pick_char():
     return "Ok"
 
 
-def mangle_post(user, msg):
-    msg.text = make_translation(user, text)
+def mangle_post(user, text):
     data = {text: make_translation(user, text), channel: "#translations"}
     print(f"sending {data}")
     headers = {'Authorization': f"Bearer {APP_TOKEN}"}
