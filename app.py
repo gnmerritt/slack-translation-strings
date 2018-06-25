@@ -45,7 +45,8 @@ def mangle_post(user, text):
 
 
 def make_translation(user, text):
-    return "Somebody talked in #dev"
+    text = text.replace(" ", '_')
+    return f"{user}: {text}"
 
 
 if __name__ == "__main__":
