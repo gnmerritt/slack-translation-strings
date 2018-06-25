@@ -1,3 +1,4 @@
+import random
 import os
 from threading import Thread
 import requests
@@ -45,8 +46,9 @@ def mangle_post(user, text):
 
 
 def make_translation(user, text):
-    text = text.replace(" ", '_')
-    return f"{user}: {text}"
+    words = text.split(" ")
+    some = [w for w in words if random.uniform() > 0.25]
+    return f"{user}: {'_'.join(some)}"
 
 
 if __name__ == "__main__":
