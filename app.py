@@ -19,7 +19,6 @@ class SlackMessage(object):
 
 @app.route('/slack', methods=['POST'])
 def pick_char():
-    print(f"got request={request}")
     data = request.get_json()
     token = data.get('token', None)
     if token != VERIFICATION_TOKEN:
@@ -44,9 +43,8 @@ def pick_char():
 
 
 def mangle_post(msg):
-    new_msg = msg.copy()
-    new_msg.text = "replaced the text!"
-    data = jsonpickle.encode(new_msg, unpicklable=False)
+    msg.text = "replaced the text!"
+    data = jsonpickle.encode(msg, unpicklable=False)
     requests.post('https://slack.com/api/chat.update', json=data)
 
 
