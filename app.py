@@ -1,11 +1,12 @@
+import os
 from threading import Thread
 import requests
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-VERIFICATION_TOKEN = ""  # put it here
-APP_TOKEN = ""  # put it here
+VERIFICATION_TOKEN = os.environ.get('V_TOKEN')
+APP_TOKEN = os.environ.get('A_TOKEN')
 
 
 class SlackMessage(object):
@@ -22,8 +23,11 @@ def pick_char():
     data = request.get_json()
     token = data.get('token', None)
     if token != VERIFICATION_TOKEN:
-        pass
-        # raise Exception(f"IllegalRequest, got t='{token}'")
+        Exception(f"IllegalRequest, got t='{token}'")
+
+    challenge = data.get('challenge', None)
+    if challenge is not None:
+        return challenge
 
     event = data.get('event', {})
     type = event.get('type', None)
