@@ -13,7 +13,6 @@ CHANNEL = os.environ.get('A_IN_CHANNEL')
 
 class SlackMessage(object):
     def __init__(self, user: str, text: str):
-        self.token = APP_TOKEN
         self.channel = "#translations"
         self.user = user
         self.text = text
@@ -50,7 +49,8 @@ def mangle_post(msg):
     msg.text = make_translation(msg.text)
     data = jsonpickle.encode(msg, unpicklable=False)
     print(f"sending {data}")
-    res = requests.post('https://slack.com/api/chat.postMessage', json=data)
+    headers = {'Authorization': f"Bearer {APP_TOKEN}"}
+    res = requests.post('https://slack.com/api/chat.postMessage', json=data, headers=headers)
     print(f"got res={res}, json={res.json()}")
 
 
